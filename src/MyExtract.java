@@ -20,16 +20,24 @@ public class MyExtract{
     
     static int[][] res;
     
-    public static void initial(String[] arg) throws IOException {
-    	n=arg.length;
-    	
-    	for (int i=0;i<n;i++)
-    		query.addElement(arg[i]);
-    	
-    	File f=new File("TimeSlots.txt");
+    public static void initial() throws IOException {
+    	File f=new File("input.txt");
 		FileReader reader = new FileReader(f);
 		BufferedReader buf= new BufferedReader(reader);
 		String line=buf.readLine();
+		while (line!=null) {
+			query.addElement(line);
+			line=buf.readLine();
+		}
+		buf.close();
+		reader.close();
+		
+    	n=query.size();
+    	
+    	f=new File("TimeSlots.txt");
+		reader = new FileReader(f);
+		buf= new BufferedReader(reader);
+		line=buf.readLine();
 		while (line!=null) {
 			timeslot.addElement(line);
 			line=buf.readLine();
@@ -120,11 +128,7 @@ public class MyExtract{
     }
     
 	public static void main(String[] args)throws Exception{
-		//args=new String[2];
-		//args[0]="高鐵";
-		//args[1]="八十後";
-		
-		initial(args);
+		initial();
 		parse();
 		writeExcel();
     }
