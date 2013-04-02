@@ -65,37 +65,51 @@ public class MyExtract{
     		String line=buf.readLine();
     		while (line!=null) {
     			if (line.contains("<nowrap>")) {
+    				String article="";
     				String time=line.substring(line.indexOf('|')+2);
     				//System.out.println(time);
     				int index=timeslot.indexOf(time);
     				while (!line.contains("<td><font size=\"5\"><b>"))
     					line=buf.readLine();
-    				for (int i=0;i<n;i++) {
-    					while (true) {
-    						int p=line.indexOf(query.elementAt(i));
-    						if (p==-1) break;
-    						line=line.substring(p+query.elementAt(i).length());
-    						res[i][index]++;
-    					}
-    				}
+    				article=line;
     				while (!line.contains("<table bgcolor=\"#FFFFFF\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"5\">"))
     					line=buf.readLine();
     				for (int i=0;i<3;i++) line=buf.readLine();
-    				/*
-    				if (!line.contains("<p>")) {
-    					System.out.println(curf.getName());
-    					System.out.println(time);
-    					System.out.println("error");
-    				}*/
+    				article=article+line;
+    				
     				for (int i=0;i<n;i++) {
-    					while (true) {
-    						int p=line.indexOf(query.elementAt(i));
-    						if (p==-1) break;
-    						line=line.substring(p+query.elementAt(i).length());
-    						res[i][index]++;
+    					String tmp_article=article;
+    					String target=query.elementAt(i);
+    					if (!target.contains("&")) {
+	    					while (true) {
+	    						int p=tmp_article.indexOf(target);
+	    						if (p==-1) break;
+	    						tmp_article=tmp_article.substring(p+target.length());
+	    						res[i][index]++;
+	    					}
+    					}
+    					else {
+    						String[] strs=target.split("&");
+    						int tmp_n=strs.length;
+    						int tmp_count[]=new int[tmp_n];
+    						for (int j=0;j<tmp_n;j++) {
+    							String ss=strs[j];
+    							tmp_count[j]=0;
+    							while (true) {
+    	    						int p=tmp_article.indexOf(ss);
+    	    						if (p==-1) break;
+    	    						tmp_article=tmp_article.substring(p+ss.length());
+    	    						tmp_count[j]++;
+    	    					}
+    						}
+    						int tmp_res=tmp_count[0];
+    						for (int j=1;j<tmp_n;j++)
+    							tmp_res=Math.min(tmp_res, tmp_count[j]);
+    						res[i][index]=res[i][index]+tmp_res;
     					}
     				}
     				num++;
+    				
     			}
     			line=buf.readLine();
     		}
