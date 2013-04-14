@@ -22,20 +22,29 @@ public class MyExtract{
     
     public static void initial() throws IOException {
     	File f=new File("input.txt");
-		FileReader reader = new FileReader(f);
-		BufferedReader buf= new BufferedReader(reader);
+    	String encoding = "UTF-8"; 
+    	BufferedReader buf = new BufferedReader( 
+    	  new InputStreamReader( 
+    	    new FileInputStream(f), 
+    	    encoding 
+    	  ) 
+    	);
+    	//FileReader reader = new FileReader(f);
+		//BufferedReader buf= new BufferedReader(reader);
 		String line=buf.readLine();
 		while (line!=null) {
 			query.addElement(line);
 			line=buf.readLine();
 		}
 		buf.close();
-		reader.close();
+		query.setElementAt(query.elementAt(0).substring(1), 0);
+		System.out.println(query.elementAt(0));
+		//reader.close();
 		
     	n=query.size();
     	
     	f=new File("TimeSlots.txt");
-		reader = new FileReader(f);
+    	FileReader reader = new FileReader(f);
 		buf= new BufferedReader(reader);
 		line=buf.readLine();
 		while (line!=null) {
@@ -58,9 +67,16 @@ public class MyExtract{
         File[] files = directory.listFiles();
         for (int k=0;k<files.length;k++) {
         	File curf=files[k];
-    		FileReader reader = new FileReader(curf);
-    		BufferedReader buf= new BufferedReader(reader);
-    		
+        	String encoding = "UTF-8"; 
+        	BufferedReader buf = new BufferedReader( 
+        	  new InputStreamReader( 
+        	    new FileInputStream(curf), 
+        	    encoding 
+        	  ) 
+        	);
+    		//FileReader reader = new FileReader(curf);
+    		//BufferedReader buf= new BufferedReader(reader);
+    		//System.out.println(curf.getName());
     		int num=0;
     		String line=buf.readLine();
     		while (line!=null) {
@@ -76,7 +92,17 @@ public class MyExtract{
     					line=buf.readLine();
     				for (int i=0;i<3;i++) line=buf.readLine();
     				article=article+line;
-    				
+    				//System.out.println("yes");
+    				//System.out.println(article);
+    				while (article.contains("<")) {
+    					
+    					int p1=article.indexOf("<");
+    					int p2=article.indexOf(">")+1;
+    					String tmp1=article.substring(0,p1);
+    					String tmp2=article.substring(p2,article.length());
+    					article=tmp1+tmp2;
+    				}
+    				//System.out.println(article);
     				for (int i=0;i<n;i++) {
     					String tmp_article=article;
     					String target=query.elementAt(i);
@@ -93,6 +119,7 @@ public class MyExtract{
     						int tmp_n=strs.length;
     						int tmp_count[]=new int[tmp_n];
     						for (int j=0;j<tmp_n;j++) {
+    							tmp_article=article;
     							String ss=strs[j];
     							tmp_count[j]=0;
     							while (true) {
@@ -106,16 +133,17 @@ public class MyExtract{
     						for (int j=1;j<tmp_n;j++)
     							tmp_res=Math.min(tmp_res, tmp_count[j]);
     						res[i][index]=res[i][index]+tmp_res;
+    						//if (i==3&&index==1) System.out.println(tmp_count[1]);
     					}
     				}
     				num++;
-    				
+    				//System.out.println(num);
     			}
     			line=buf.readLine();
     		}
     		//System.out.println(num);
     		buf.close();
-    		reader.close();
+    		//reader.close();
         }
 	}
     
